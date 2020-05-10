@@ -1,0 +1,175 @@
+﻿<Window x:Class="Isar_Aerospace.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Isar_Aerospace"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="800" Opacity="0.2" AllowsTransparency="True" WindowStyle="None">
+    <Window.Resources>
+
+        <local:ValueGradientConverter x:Key="ValueGradientConverter"></local:ValueGradientConverter>
+        <Style x:Key="Body_Content_DataGrid_Centering"
+                TargetType="{x:Type DataGridCell}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter  VerticalAlignment="Center" />
+                            <DataGridCell IsSelected="false" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type Button}" >
+            <Setter Property="Background" Value="DarkOrange"/>
+            <Setter Property="Height" Value="30"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Height="372" Margin="34,83,0,0" 
+                  VerticalAlignment="Top" Width="693" AutoGenerateColumns="False"  >
+            <!--CellStyle="{StaticResource Body_Content_DataGrid_Centering}"-->
+            <DataGrid.Resources>
+
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background" Value="Turquoise"/>
+                    <Setter Property="FontSize" Value="16" />
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="Height" Value="40"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,2"/>
+                    <Setter Property="BorderBrush" Value="Black" />
+                </Style>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Setter Property="FontSize" Value="14" />
+                    <Setter Property="Foreground" Value="#FF4F4A4C" />
+                    <Setter Property="Height" Value="35" />
+                    <Setter Property="VerticalContentAlignment"   Value="Center" />
+                    <Setter Property="VerticalAlignment"   Value="Center" />
+                    <Style.Triggers>
+                        <Trigger Property="DataGridCell.IsSelected" Value="True">
+                            <Setter Property="Background" Value="#FFF74242" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+
+            </DataGrid.Resources>
+            <DataGrid.RowHeaderStyle>
+                <Style TargetType="DataGridRowHeader">
+                    <Setter Property="Background" Value="DarkOrange" />
+                    <Setter Property="Foreground" Value="White" />
+                </Style>
+            </DataGrid.RowHeaderStyle>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="White" />
+                    <Setter Property="VerticalContentAlignment"   Value="Center" />
+                    <Setter Property="VerticalAlignment"   Value="Center" />
+                    <Setter Property="HorizontalContentAlignment"   Value="Center" />
+                    <Style.Triggers>
+                        <Trigger Property="IsFocused"  Value="True">
+                            <Setter Property="Background" Value="#FFFF2500"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="Orange"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <DataTrigger Binding="{Binding InStock}" Value="False">
+                            <Setter Property="Background" Value="LightSkyBlue"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Title}" Header="Title"  Width="230"/>
+                <DataGridTextColumn Binding="{Binding Author}" Header="Author" Width="100"/>
+                <DataGridTextColumn Binding="{Binding Year}" Header="Year" Width="45"/>
+                <DataGridTextColumn Binding="{Binding Price}" Header="Price" Width="45"  >
+                    <!--CellStyle="{StaticResource ResourceKey=MyCellStyle }"-->
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}">
+
+                            <Setter Property="Background" Value="{Binding Price, Converter={StaticResource ValueGradientConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridCheckBoxColumn Binding="{Binding InStock}" Header="InStock" Width="60" />
+                <DataGridTemplateColumn Header="Binding" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox Background="Transparent" IsEditable="True" x:Name="cmbBinding" SelectedIndex="{Binding Binding}" ItemsSource="{Binding bindingList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"  >
+
+                            </ComboBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox Background="Transparent" IsEditable="True" x:Name="cmbBinding" SelectedItem="{Binding Binding}"></ComboBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Description" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button x:Name="Description" Content="Description" ToolTip="{Binding Description}" Click="Description_Click"  ></Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+
+        </DataGrid>
+        <Button x:Name="btnParseDisplay" Content="Load and Display" HorizontalAlignment="Left" Margin="34,44,0,0" VerticalAlignment="Top" Width="150" Click="btnParseDisplay_Click">
+
+        </Button>
+        <Button x:Name="button" Content="Remove out of stock" HorizontalAlignment="Left" Margin="193,44,0,0" VerticalAlignment="Top" Width="150" Click="button_Click"/>
+        <Button x:Name="btnExit"  Width="30" Height="30"  Click="btnExit_Click" Content="X" Margin="754,0,16,570" Background="Red" >
+
+
+        </Button>
+        <Rectangle x:Name="gradientBox" HorizontalAlignment="Left" Height="372" Margin="739,83,0,0" Stroke="Black" VerticalAlignment="Top" Width="29">
+
+        </Rectangle>
+        <Image x:Name="logo" Source="logo.png" HorizontalAlignment="Left" Height="120" Margin="34,468,0,0" VerticalAlignment="Top" Width="400">
+            <Image.Effect>
+                <DropShadowEffect Direction="335" BlurRadius="2" RenderingBias="Quality" ShadowDepth="2"/>
+            </Image.Effect>
+        </Image>
+        <Label x:Name="lblUri" Content="https://www.isaraerospace.com/" HorizontalAlignment="Left" Margin="391,545,0,0" VerticalAlignment="Top" Width="377" Height="34" Foreground="White" BorderBrush="Black" FontSize="18" FontFamily="Global Monospace" UseLayoutRounding="False">
+            <Label.Effect>
+                <DropShadowEffect BlurRadius="1" ShadowDepth="1" RenderingBias="Quality"/>
+            </Label.Effect>
+        </Label>
+        <Label x:Name="lblLow" Content="Low" HorizontalAlignment="Left" Height="27" Margin="754,100,-14,0" VerticalAlignment="Top" Width="60" RenderTransformOrigin="0.5,0.5">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+        <Label x:Name="lblHigh" Content="High" HorizontalAlignment="Left" Height="27" Margin="754,409,-14,0" VerticalAlignment="Top" Width="60" RenderTransformOrigin="0.5,0.5">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+
+
+    </Grid>
+
+
+
+</Window>
